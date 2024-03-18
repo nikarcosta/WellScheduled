@@ -40,8 +40,8 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.appointments (
     id integer NOT NULL,
-    doctor_id integer,
-    patient_id integer,
+    doctor_id integer NOT NULL,
+    patient_id integer NOT NULL,
     appointment_date timestamp without time zone NOT NULL,
     status public.status DEFAULT 'Scheduled'::public.status NOT NULL
 );
@@ -77,7 +77,7 @@ ALTER SEQUENCE public.appointments_id_seq OWNED BY public.appointments.id;
 
 CREATE TABLE public.consultation_history (
     id integer NOT NULL,
-    appointment_id integer,
+    appointment_id integer NOT NULL,
     diagnosis text,
     treatment text
 );
@@ -251,19 +251,86 @@ ALTER TABLE ONLY public.specialties ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Data for Name: appointments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.appointments (id, doctor_id, patient_id, appointment_date, status) FROM stdin;
+\.
+
+
+--
+-- Data for Name: consultation_history; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.consultation_history (id, appointment_id, diagnosis, treatment) FROM stdin;
+\.
+
+
+--
+-- Data for Name: doctors; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.doctors (id, full_name, email, phone_number) FROM stdin;
+\.
+
+
+--
+-- Data for Name: patients; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.patients (id, full_name, email, phone_number, date_of_birth) FROM stdin;
+\.
+
+
+--
+-- Data for Name: specialties; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.specialties (id, doctor_id, specialty) FROM stdin;
+\.
+
+
+--
+-- Name: appointments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.appointments_id_seq', 1, false);
+
+
+--
+-- Name: consultation_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.consultation_history_id_seq', 1, false);
+
+
+--
+-- Name: doctors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.doctors_id_seq', 1, false);
+
+
+--
+-- Name: patients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.patients_id_seq', 1, false);
+
+
+--
+-- Name: specialties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.specialties_id_seq', 1, false);
+
+
+--
 -- Name: appointments appointments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.appointments
     ADD CONSTRAINT appointments_pkey PRIMARY KEY (id);
-
-
---
--- Name: consultation_history consultation_history_appointment_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.consultation_history
-    ADD CONSTRAINT consultation_history_appointment_id_key UNIQUE (appointment_id);
 
 
 --
@@ -275,27 +342,11 @@ ALTER TABLE ONLY public.consultation_history
 
 
 --
--- Name: doctors doctors_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.doctors
-    ADD CONSTRAINT doctors_email_key UNIQUE (email);
-
-
---
 -- Name: doctors doctors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.doctors
     ADD CONSTRAINT doctors_pkey PRIMARY KEY (id);
-
-
---
--- Name: patients patients_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.patients
-    ADD CONSTRAINT patients_email_key UNIQUE (email);
 
 
 --
