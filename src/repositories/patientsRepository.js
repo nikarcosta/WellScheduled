@@ -17,7 +17,12 @@ async function createPatientRepository({
   );
 }
 
+async function findPatientByIdRepository(id) {
+  return db.query(`SELECT * FROM patients WHERE id=$1`, [id]);
+}
+
 export default {
   findPatientsByEmailRepository,
   createPatientRepository,
+  findPatientByIdRepository,
 };

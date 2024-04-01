@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
-import { v4 as uuidV4 } from "uuid";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import patientsRepository from "../repositories/patientsRepository.js";
 import errors from "../errors/index.js";
+dotenv.config();
 
 async function createService({
   full_name,
@@ -26,6 +28,30 @@ async function createService({
   });
 }
 
+async function signInService(email, password) {
+  const {
+    rowCount,
+    rows: [patient],
+  } = await patientsRepository.findPatientsByEmailRepository(email);
+
+  if (!rowCount) throw errors.invalidCredentialsError();
+
+  console.log(patient.password);
+
+  const validPassword = await bcrypt.compare(password, patient.password);
+  if (!validPassword) throw errors.invalidCredentialsError();
+
+  const payload = {
+    userId: patient.id,
+    exp: Math.floor(Date.now() / 1000 + 7 * 24 * 60 * 60),
+  };
+
+  const token = jwt.sign(payload, process.env.SECRET_JWT);
+
+  return token;
+}
+
 export default {
   createService,
+  signInService,
 };

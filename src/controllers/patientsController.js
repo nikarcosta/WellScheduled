@@ -24,6 +24,20 @@ async function create(req, res, next) {
   }
 }
 
+async function signIn(req, res, next) {
+  const { email, password } = req.body;
+
+  console.log(req.body);
+
+  try {
+    const token = await patientsService.signInService(email, password);
+    return res.send({ token });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export default {
   create,
+  signIn,
 };

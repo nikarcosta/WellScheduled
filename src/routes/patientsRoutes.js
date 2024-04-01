@@ -10,5 +10,6 @@ patientsRouter.post(
   validateSchema(patientSchema),
   patientsController.create
 );
+patientsRouter.post("/sign-in", patientsController.signIn);
 
 export default patientsRouter;
